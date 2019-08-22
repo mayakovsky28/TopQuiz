@@ -9,6 +9,7 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/activity_main_greeting_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -17,6 +18,7 @@
         android:text="Welcome to TopQuiz! \nWhat is your first name?"/>
 
     <EditText
+        android:id="@+id/activity_main_name_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="20dp"
@@ -24,6 +26,7 @@
         />
 
     <Button
+        android:id="@+id/activity_main_play_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
