@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,6 +23,8 @@ import java.util.Arrays;
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String BUNDLE_EXTRA_SCORE = GameActivity.class.getCanonicalName().concat("BUNDLE_EXTRA_SCORE");
+    public static final String BUNDLE_STATE_SCORE = GameActivity.class.getCanonicalName().concat("BUNDLE_STATE_SCORE");
+    public static final String BUNDLE_STATE_QUESTIONS = GameActivity.class.getCanonicalName().concat("BUNDLE_STATE_QUESTIONS");
 
     private TextView mQuestionText;
     private Button mAnswerOne;
@@ -35,14 +38,30 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int mScore;
     private int mNumberOfQuestions;
 
+    private boolean mEnableTouchEvents;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(BUNDLE_STATE_SCORE, mScore);
+        outState.putInt(BUNDLE_STATE_QUESTIONS, mNumberOfQuestions);
+        super.onSaveInstanceState(outState);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        mEnableTouchEvents = true;
+
         mQuestionBank = this.generateQuestions();
 
         mNumberOfQuestions = 4;
+
+        if (savedInstanceState != null) {
+            mScore = savedInstanceState.getInt(BUNDLE_STATE_SCORE);
+            mNumberOfQuestions = savedInstanceState.getInt(BUNDLE_STATE_QUESTIONS);
+        }
 
         mQuestionText = findViewById(R.id.activity_game_question_text);
         mAnswerOne = findViewById(R.id.activity_game_answer1_btn);
@@ -61,6 +80,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         mCurrentQuestion = mQuestionBank.getQuestion();
         this.displayQuestion(mCurrentQuestion);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mEnableTouchEvents && super.dispatchTouchEvent(ev);
     }
 
     private void displayQuestion(final Question question) {
@@ -105,6 +129,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(GameActivity.this, "That's not right!", Toast.LENGTH_SHORT).show();
         }
 
+        mEnableTouchEvents = false;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -114,6 +139,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     mCurrentQuestion = mQuestionBank.getQuestion();
                     displayQuestion(mCurrentQuestion);
                 }
+                mEnableTouchEvents = true;
             }
         }, 2000);
     }
