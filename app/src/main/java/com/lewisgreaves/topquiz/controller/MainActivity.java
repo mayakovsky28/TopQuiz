@@ -88,5 +88,6 @@ public class MainActivity extends AppCompatActivity {
         String returnText = "Welcome back " + userName + "! Your last score was " + score + ", will you do better this time?";
         mGreetingText.setText(returnText);
         mNameInput.setText(userName);
+        mNameInput.setSelection(userName.length());
     }
 }
